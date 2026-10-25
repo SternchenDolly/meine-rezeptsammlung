@@ -1,0 +1,12 @@
+{
+  "name": "Meine Rezeptsammlung",
+  "short_name": "Rezepte",
+  "description": "Dein persönliches Kochbuch mit Einkaufsliste und Offline-Unterstützung.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf7ef",
+  "theme_color": "#244b38",
+  "orientation": "any",
+  "icons": []
+}

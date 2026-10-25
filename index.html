@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#244b38">
+<meta name="description" content="Deine persönliche Rezeptsammlung – einfach, übersichtlich und offline nutzbar.">
+<link rel="manifest" href="manifest.json">
+<title>Meine Rezeptsammlung</title>
+<style>
+:root{--green:#244b38;--green2:#37694f;--cream:#faf7ef;--paper:#fffdf8;--line:#e5dfd1;--ink:#242b25;--muted:#68736b;--red:#a63d35;--shadow:0 4px 18px #243b2b12}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.45}
+header{background:var(--green);color:white;padding:18px 16px 16px;position:sticky;top:0;z-index:5;box-shadow:0 2px 12px #0002}
+.header-inner{max-width:1000px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{font-size:1.28rem;margin:0}header p{margin:3px 0 0;color:#e3eee5;font-size:.85rem}
+main{max-width:1000px;margin:0 auto;padding:16px 14px 96px}
+button,input,textarea,select{font:inherit}button{border:0;border-radius:12px;padding:11px 14px;background:var(--green);color:white;font-weight:650;cursor:pointer}button.secondary{background:#e8eee7;color:var(--green)}button.ghost{background:transparent;color:var(--green);border:1px solid var(--line)}button.danger{background:#f8e8e5;color:var(--red)}button:disabled{opacity:.5}
+.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}.toolbar button{min-height:46px}
+.searchrow{display:flex;gap:8px;margin-bottom:12px}.searchrow input{flex:1;min-width:0}
+input,textarea,select{width:100%;border:1px solid #d8d5ca;background:white;border-radius:10px;padding:11px;color:var(--ink)}textarea{min-height:86px;resize:vertical}label{display:block;font-size:.9rem;font-weight:650;margin:12px 0 5px}.hint{font-size:.8rem;color:var(--muted);font-weight:400}
+.filters{display:flex;gap:7px;overflow:auto;padding:2px 0 12px}.chip{white-space:nowrap;border:1px solid var(--line);background:var(--paper);color:var(--green);padding:7px 11px;border-radius:999px;font-size:.88rem}.chip.active{background:var(--green);color:white;border-color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:12px}.recipe-card{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;min-width:0}.recipe-card img{width:100%;height:150px;object-fit:cover;background:#e8e8dc}.recipe-content{padding:13px;display:flex;flex-direction:column;gap:7px;flex:1}.recipe-content h3{margin:0;font-size:1.08rem;overflow-wrap:anywhere}.meta{font-size:.82rem;color:var(--muted)}.tag{display:inline-block;background:#edf1e8;color:var(--green);padding:3px 8px;border-radius:999px;font-size:.75rem}.card-actions{display:flex;gap:7px;margin-top:auto;padding-top:5px}.card-actions button{flex:1;padding:9px 8px;font-size:.88rem}
+.empty{text-align:center;background:var(--paper);border:1px dashed #cfc9b9;border-radius:16px;padding:28px 16px;color:var(--muted)}.empty strong{display:block;color:var(--green);font-size:1.08rem;margin-bottom:6px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}.panel h2{margin:0 0 8px;font-size:1.25rem}.panel h3{margin:18px 0 6px}.hidden{display:none!important}.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}.ingredient-row{display:grid;grid-template-columns:1fr 70px 80px 38px;gap:6px;margin:8px 0}.ingredient-row input{padding:9px 7px}.step-row{display:flex;gap:7px;margin:8px 0}.step-row textarea{min-height:64px}.step-row button{align-self:flex-start;padding:9px}.form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.form-actions button{flex:1;min-width:120px}.detail-image{width:100%;max-height:300px;object-fit:cover;border-radius:12px;margin:8px 0}.ingredient-list{list-style:none;padding:0}.ingredient-list li{padding:7px 0;border-bottom:1px solid var(--line)}.steps{padding-left:23px}.steps li{padding:6px 0}.detail-buttons{display:flex;gap:8px;flex-wrap:wrap}.detail-buttons button{flex:1}
+.shop-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}.shop-item input[type=checkbox]{width:22px;height:22px;margin-top:2px;flex:0 0 22px;accent-color:var(--green)}.shop-item.checked .shop-text{text-decoration:line-through;color:var(--muted)}.shop-text{flex:1;overflow-wrap:anywhere}.shop-actions{display:flex;gap:8px;flex-wrap:wrap}.notice{background:#edf1e8;color:var(--green);padding:10px 12px;border-radius:10px;font-size:.9rem;margin:10px 0}.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:10;display:flex;justify-content:center;background:#fffdf8ed;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:8px max(8px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom));}.nav-inner{display:flex;gap:6px;width:100%;max-width:650px}.nav-inner button{flex:1;background:transparent;color:var(--muted);padding:8px 4px;font-size:.78rem;font-weight:600}.nav-inner button.active{background:#e8eee7;color:var(--green)}.nav-inner span{display:block;font-size:1.2rem;margin-bottom:1px}
+.modal-backdrop{position:fixed;inset:0;background:#14231bd9;z-index:20;display:flex;align-items:flex-end;justify-content:center;padding:10px}.modal{width:100%;max-width:760px;max-height:92vh;overflow:auto;background:var(--cream);border-radius:18px;padding:16px}.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px}.modal-head h2{margin:0;font-size:1.2rem}.small{font-size:.82rem;color:var(--muted)}.top-link{font-size:.85rem;color:#e3eee5;text-decoration:underline;background:none;padding:4px}
+@media(min-width:650px){.toolbar{grid-template-columns:repeat(4,1fr)}.modal-backdrop{align-items:center}.modal{max-height:88vh}.recipe-card img{height:170px}}
+</style>
+</head>
+<body>
+<header><div class="header-inner"><div><h1>🍲 Meine Rezeptsammlung</h1><p>Dein persönliches Kochbuch</p></div><button id="installBtn" class="secondary hidden" style="white-space:nowrap">Installieren</button></div></header>
+<main>
+<section id="homeView">
+<div class="toolbar">
+<button id="addRecipeBtn">＋ Rezept hinzufügen</button>
+<button id="randomBtn" class="secondary">🎲 Überrasch mich!</button>
+<button id="shoppingBtn" class="secondary">🛒 Einkaufsliste</button>
+<button id="backupBtn" class="ghost">⇧ Backup</button>
+</div>
+<div class="searchrow"><input id="searchInput" type="search" placeholder="🔎 Rezept oder Zutat suchen …" aria-label="Rezepte suchen"><button id="clearSearch" class="ghost">✕</button></div>
+<div id="filters" class="filters"></div>
+<div id="recipeCount" class="small" style="margin:0 0 10px"></div>
+<div id="recipeGrid" class="grid"></div>
+<div id="emptyState" class="empty hidden"><strong>Dein Kochbuch wartet auf Rezepte 🌿</strong>Füge dein erstes Rezept hinzu oder importiere ein Backup.</div>
+</section>
+<section id="shoppingView" class="hidden">
+<div class="panel"><div class="modal-head"><h2>🛒 Einkaufsliste</h2><button id="backHomeBtn" class="ghost">Zurück</button></div>
+<p class="small">Füge Zutaten aus einzelnen Rezepten hinzu oder ergänze deine Liste selbst.</p>
+<div class="row"><input id="shopNewName" placeholder="Artikel, z. B. Milch"><button id="shopAddBtn">Hinzufügen</button></div>
+<div id="shopRecipePicker"></div><div id="shoppingItems"></div>
+<div class="shop-actions" style="margin-top:14px"><button id="clearCheckedBtn" class="secondary">Abgehakte entfernen</button><button id="clearShopBtn" class="danger">Liste leeren</button><button id="shareShopBtn" class="ghost">Liste teilen</button></div>
+</div>
+</section>
+<section id="backupView" class="hidden">
+<div class="panel"><div class="modal-head"><h2>💾 Backup & Daten</h2><button id="backupBackBtn" class="ghost">Zurück</button></div>
+<p>Deine Rezepte werden auf diesem Gerät im Browser gespeichert. Sichere sie gelegentlich als Datei, damit du sie bei einem Geräte- oder Browserwechsel wiederherstellen kannst.</p>
+<div class="form-actions"><button id="exportBtn">Backup herunterladen</button><button id="importBtn" class="secondary">Backup importieren</button><input id="importFile" type="file" accept=".json,application/json" class="hidden"></div>
+<div class="notice">Tipp: Bewahre die Backup-Datei an einem sicheren Ort auf. Ein Foto wird im Backup mitgespeichert.</div>
+<button id="resetAllBtn" class="danger">Alle Rezepte löschen …</button>
+</div>
+</section>
+</main>
+<nav class="bottomnav"><div class="nav-inner"><button id="navHome" class="active"><span>⌂</span>Rezepte</button><button id="navShop"><span>☷</span>Einkaufsliste</button><button id="navBackup"><span>↥</span>Backup</button></div></nav>
+<div id="modalRoot"></div>
+<script>
+const $=id=>document.getElementById(id);
+const CATEGORIES=["Alle","Fleisch","Geflügel","Fisch","Gemüse","Pasta","Dessert","Suppe","Backen","Sonstiges","❤️ Favoriten"];
+const KEY="meineRezeptsammlung_v1", SHOPKEY="meineRezeptsammlung_shop_v1";
+let recipes=load(KEY,[]), shopping=load(SHOPKEY,[]), activeCategory="Alle", deferredInstall=null, editingId=null, detailId=null;
+function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v??fallback}catch(e){return fallback}}
+function save(){localStorage.setItem(KEY,JSON.stringify(recipes));localStorage.setItem(SHOPKEY,JSON.stringify(shopping))}
+function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function safeImage(s){return typeof s==="string"&&s.startsWith("data:image/")?s:""}
+function nav(which){$("homeView").classList.toggle("hidden",which!=="home");$("shoppingView").classList.toggle("hidden",which!=="shop");$("backupView").classList.toggle("hidden",which!=="backup");$("navHome").classList.toggle("active",which==="home");$("navShop").classList.toggle("active",which==="shop");$("navBackup").classList.toggle("active",which==="backup");if(which==="shop")renderShopping();if(which==="home")renderRecipes()}
+function renderFilters(){ $("filters").innerHTML=CATEGORIES.map(c=>`<button class="chip ${c===activeCategory?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");$("filters").querySelectorAll("button").forEach(b=>b.onclick=()=>{activeCategory=b.dataset.cat;renderFilters();renderRecipes()})}
+function renderRecipes(){
+ const q=$("searchInput").value.trim().toLowerCase();
+ const list=recipes.filter(r=>(activeCategory==="Alle"||(activeCategory==="❤️ Favoriten"?r.favorite:r.category===activeCategory))&&(!q||[r.name,r.category,r.notes,...(r.ingredients||[]).map(x=>x.name)].join(" ").toLowerCase().includes(q)));
+ $("recipeCount").textContent=`${list.length} ${list.length===1?"Rezept":"Rezepte"}${activeCategory!=="Alle"?" · "+activeCategory:""}`;
+ $("recipeGrid").innerHTML=list.map(r=>`<article class="recipe-card">${safeImage(r.image)?`<img src="${r.image}" alt="Foto von ${esc(r.name)}">`:""}<div class="recipe-content"><div><span class="tag">${esc(r.category||"Sonstiges")}</span> ${r.favorite?"<span aria-label='Favorit'>❤️</span>":""}</div><h3>${esc(r.name)}</h3><div class="meta">${r.servings||2} Portionen · ${r.time?esc(r.time)+" Min.":"Zeit nicht angegeben"}</div><div class="card-actions"><button data-open="${r.id}">Ansehen</button><button class="secondary" data-fav="${r.id}" aria-label="Favorit">${r.favorite?"♥":"♡"}</button></div></div></article>`).join("");
+ $("emptyState").classList.toggle("hidden",list.length!==0);
+ $("recipeGrid").classList.toggle("hidden",list.length===0);
+ $("recipeGrid").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>showDetail(b.dataset.open));
+ $("recipeGrid").querySelectorAll("[data-fav]").forEach(b=>b.onclick=()=>{const r=recipes.find(x=>x.id===b.dataset.fav);r.favorite=!r.favorite;save();renderRecipes()});
+}
+function showModal(content){$("modalRoot").innerHTML=`<div class="modal-backdrop" id="modalBackdrop"><div class="modal" role="dialog" aria-modal="true">${content}</div></div>`;$("modalBackdrop").addEventListener("click",e=>{if(e.target.id==="modalBackdrop")closeModal()})}
+function closeModal(){$("modalRoot").innerHTML="";editingId=null;detailId=null}
+function ingredientRow(x={name:"",amount:"",unit:""}){return `<div class="ingredient-row"><input data-ing="name" placeholder="Zutat" value="${esc(x.name)}"><input data-ing="amount" placeholder="Menge" value="${esc(x.amount)}"><input data-ing="unit" placeholder="Einheit" value="${esc(x.unit)}"><button type="button" class="danger removeIng" aria-label="Zutat entfernen">×</button></div>`}
+function stepRow(v=""){return `<div class="step-row"><textarea data-step placeholder="Beschreibe diesen Zubereitungsschritt …">${esc(v)}</textarea><button type="button" class="danger removeStep" aria-label="Schritt entfernen">×</button></div>`}
+function openEditor(recipe=null){
+ editingId=recipe?.id||null;const r=recipe||{name:"",category:"Fleisch",servings:2,time:"",notes:"",ingredients:[{name:"",amount:"",unit:""}],steps:[""],image:""};
+ showModal(`<div class="modal-head"><h2>${recipe?"Rezept bearbeiten":"Neues Rezept"}</h2><button type="button" id="closeEditor" class="ghost">Schließen</button></div>
+ <form id="recipeForm"><label for="rName">Rezeptname *</label><input id="rName" required maxlength="120" value="${esc(r.name)}" placeholder="z. B. Hähnchen in Pilzrahmsoße">
+ <div class="row"><div><label for="rCategory">Kategorie</label><select id="rCategory">${CATEGORIES.filter(c=>c!=="Alle"&&c!=="❤️ Favoriten").map(c=>`<option ${c===(r.category||"Sonstiges")?"selected":""}>${esc(c)}</option>`).join("")}</select></div><div><label for="rServings">Portionen</label><input id="rServings" type="number" min="1" max="100" value="${Number(r.servings)||2}"></div><div><label for="rTime">Minuten</label><input id="rTime" type="number" min="0" max="1440" value="${esc(r.time||"")}" placeholder="45"></div></div>
+ <h3>Zutaten</h3><div id="ingredientRows">${(r.ingredients?.length?r.ingredients:[{name:"",amount:"",unit:""}]).map(ingredientRow).join("")}</div><button type="button" id="addIngredient" class="secondary">＋ Zutat ergänzen</button>
+ <h3>Schritt-für-Schritt-Anleitung</h3><div id="stepRows">${(r.steps?.length?r.steps:[""]).map(stepRow).join("")}</div><button type="button" id="addStep" class="secondary">＋ Schritt ergänzen</button>
+ <label for="rNotes">Notizen / Tipps <span class="hint">(optional)</span></label><textarea id="rNotes" placeholder="Zum Beispiel: Mit frischer Petersilie servieren.">${esc(r.notes||"")}</textarea>
+ <label for="rImage">Rezeptfoto <span class="hint">(optional)</span></label><input id="rImage" type="file" accept="image/*"><div class="small">Du kannst ein Foto auswählen. Es wird im Browser gespeichert; sehr große Bilder werden verkleinert.</div>${safeImage(r.image)?`<img id="currentImage" src="${r.image}" class="detail-image" alt="Aktuelles Rezeptfoto"><label><input id="removeImage" type="checkbox" style="width:auto"> Vorhandenes Foto entfernen</label>`:""}
+ <div class="form-actions"><button type="submit">Rezept speichern</button><button type="button" id="cancelEditor" class="ghost">Abbrechen</button></div></form>`);
+ $("closeEditor").onclick=closeModal;$("cancelEditor").onclick=closeModal;
+ $("addIngredient").onclick=()=>{$("ingredientRows").insertAdjacentHTML("beforeend",ingredientRow());wireRemove()};
+ $("addStep").onclick=()=>{$("stepRows").insertAdjacentHTML("beforeend",stepRow());wireRemove()};
+ wireRemove();
+ $("recipeForm").onsubmit=async e=>{e.preventDefault();const name=$("rName").value.trim();if(!name)return;
+ const ingredients=[...document.querySelectorAll("#ingredientRows .ingredient-row")].map(el=>({name:el.querySelector('[data-ing="name"]').value.trim(),amount:el.querySelector('[data-ing="amount"]').value.trim(),unit:el.querySelector('[data-ing="unit"]').value.trim()})).filter(x=>x.name);
+ const steps=[...document.querySelectorAll("#stepRows textarea")].map(x=>x.value.trim()).filter(Boolean);
+ let image=r.image||"";if($("removeImage")?.checked)image="";const file=$("rImage").files[0];if(file){try{image=await resizeImage(file)}catch(err){alert("Das Bild konnte nicht verarbeitet werden. Bitte probiere ein anderes Bild.");return}}
+ const obj={id:editingId||id(),name,category:$("rCategory").value,servings:Math.max(1,Number($("rServings").value)||2),time:Math.max(0,Number($("rTime").value)||0),ingredients,steps,notes:$("rNotes").value.trim(),image,favorite:r.favorite||false,created:r.created||Date.now(),updated:Date.now()};
+ if(editingId){recipes=recipes.map(x=>x.id===editingId?obj:x)}else recipes.unshift(obj);save();closeModal();renderRecipes();
+ };
+}
+function wireRemove(){document.querySelectorAll(".removeIng").forEach(b=>b.onclick=()=>{if(document.querySelectorAll("#ingredientRows .ingredient-row").length>1)b.parentElement.remove();else b.parentElement.querySelectorAll("input").forEach(i=>i.value="")});document.querySelectorAll(".removeStep").forEach(b=>b.onclick=()=>{if(document.querySelectorAll("#stepRows .step-row").length>1)b.parentElement.remove();else b.parentElement.querySelector("textarea").value=""})}
+function resizeImage(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=reject;reader.onload=()=>{const im=new Image();im.onerror=reject;im.onload=()=>{const max=1200,scale=Math.min(1,max/Math.max(im.width,im.height)),canvas=document.createElement("canvas");canvas.width=Math.round(im.width*scale);canvas.height=Math.round(im.height*scale);canvas.getContext("2d").drawImage(im,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL("image/jpeg",.82))};im.src=reader.result};reader.readAsDataURL(file)})}
+function showDetail(recipeId){
+ const r=recipes.find(x=>x.id===recipeId);if(!r)return;detailId=recipeId;
+ showModal(`<div class="modal-head"><h2>${esc(r.name)}</h2><button id="detailClose" class="ghost">Schließen</button></div><span class="tag">${esc(r.category)}</span> <span class="small">${r.servings||2} Portionen · ${r.time?esc(r.time)+" Min.":"keine Zeitangabe"}</span>${safeImage(r.image)?`<img class="detail-image" src="${r.image}" alt="Foto von ${esc(r.name)}">`:""}
+ <h3>Zutaten</h3><div class="row" style="align-items:center"><label style="flex:0 0 auto;margin:0">Portionen:</label><input id="detailServings" type="number" min="1" max="100" value="${r.servings||2}" style="max-width:100px"></div><ul class="ingredient-list" id="detailIngredients"></ul>
+ <h3>Zubereitung</h3>${r.steps?.length?`<ol class="steps">${r.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>`:"<p class='small'>Noch keine Zubereitungsschritte gespeichert.</p>"}${r.notes?`<h3>Notizen</h3><p>${esc(r.notes).replace(/\n/g,"<br>")}</p>`:""}
+ <div class="detail-buttons"><button id="addToShop">🛒 Zutaten zur Einkaufsliste</button><button id="editDetail" class="secondary">Bearbeiten</button><button id="favDetail" class="ghost">${r.favorite?"♥ Favorit":"♡ Favorit"}</button><button id="deleteDetail" class="danger">Löschen</button></div>`);
+ function updateIngredients(){const target=Number($("detailServings").value)||r.servings||2;const factor=target/(r.servings||2);$("detailIngredients").innerHTML=(r.ingredients||[]).map(i=>{let amount=i.amount;if(amount&&Number.isFinite(Number(amount))){const n=Number(amount)*factor;amount=Number(n.toFixed(2)).toString()}return `<li>• ${amount?`<strong>${esc(amount)} ${esc(i.unit)}</strong> `:""}${esc(i.name)}</li>`}).join("")||"<li>Keine Zutaten gespeichert.</li>"}
+ updateIngredients();$("detailServings").onchange=updateIngredients;$("detailClose").onclick=closeModal;
+ $("addToShop").onclick=()=>{const target=Number($("detailServings").value)||r.servings||2,factor=target/(r.servings||2);(r.ingredients||[]).forEach(i=>{if(!i.name)return;let amount=i.amount;if(amount&&Number.isFinite(Number(amount)))amount=String(Number((Number(amount)*factor).toFixed(2)));const text=[amount,i.unit,i.name].filter(Boolean).join(" ");shopping.push({id:id(),text,checked:false,recipe:r.name})});save();closeModal();nav("shop")};
+ $("editDetail").onclick=()=>{const current=recipes.find(x=>x.id===recipeId);closeModal();openEditor(current)};
+ $("favDetail").onclick=()=>{r.favorite=!r.favorite;save();showDetail(recipeId);renderRecipes()};
+ $("deleteDetail").onclick=()=>{if(confirm(`Möchtest du „${r.name}“ wirklich löschen?`)){recipes=recipes.filter(x=>x.id!==recipeId);save();closeModal();renderRecipes()}};
+}
+function renderShopping(){
+ const picker=$("shopRecipePicker");picker.innerHTML=`<label for="shopRecipeSelect">Zutaten aus einem Rezept hinzufügen</label><div class="row"><select id="shopRecipeSelect"><option value="">Rezept auswählen …</option>${recipes.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join("")}</select><button id="shopRecipeAdd">Zutaten übernehmen</button></div>`;
+ $("shopRecipeAdd").onclick=()=>{const r=recipes.find(x=>x.id===$("shopRecipeSelect").value);if(!r)return;for(const i of r.ingredients||[]){if(!i.name)continue;const text=[i.amount,i.unit,i.name].filter(Boolean).join(" ");shopping.push({id:id(),text,checked:false,recipe:r.name})}save();renderShopping()};
+ $("shoppingItems").innerHTML=shopping.length?shopping.map(i=>`<div class="shop-item ${i.checked?"checked":""}"><input type="checkbox" data-check="${i.id}" ${i.checked?"checked":""} aria-label="Abhaken"><div class="shop-text">${esc(i.text)}${i.recipe?`<div class="small">Aus: ${esc(i.recipe)}</div>`:""}</div><button class="danger" data-shopdel="${i.id}" aria-label="Artikel löschen">×</button></div>`).join(""):"<p class='small'>Deine Einkaufsliste ist noch leer.</p>";
+ $("shoppingItems").querySelectorAll("[data-check]").forEach(c=>c.onchange=()=>{const i=shopping.find(x=>x.id===c.dataset.check);if(i)i.checked=c.checked;save();renderShopping()});
+ $("shoppingItems").querySelectorAll("[data-shopdel]").forEach(b=>b.onclick=()=>{shopping=shopping.filter(x=>x.id!==b.dataset.shopdel);save();renderShopping()});
+}
+function exportData(){const data={app:"Meine Rezeptsammlung",version:1,exportedAt:new Date().toISOString(),recipes,shopping};const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="rezeptsammlung-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();URL.revokeObjectURL(url)}
+function showBackup(){nav("backup")}
+$("addRecipeBtn").onclick=()=>openEditor();$("randomBtn").onclick=()=>{if(!recipes.length){alert("Dein Kochbuch ist noch leer. Füge zuerst ein Rezept hinzu.");return}showDetail(recipes[Math.floor(Math.random()*recipes.length)].id)};
+$("shoppingBtn").onclick=()=>nav("shop");$("backupBtn").onclick=()=>nav("backup");$("navHome").onclick=()=>nav("home");$("navShop").onclick=()=>nav("shop");$("navBackup").onclick=()=>nav("backup");$("backHomeBtn").onclick=()=>nav("home");$("backupBackBtn").onclick=()=>nav("home");
+$("searchInput").oninput=renderRecipes;$("clearSearch").onclick=()=>{$("searchInput").value="";renderRecipes()};
+$("shopAddBtn").onclick=()=>{const v=$("shopNewName").value.trim();if(v){shopping.push({id:id(),text:v,checked:false,recipe:""});$("shopNewName").value="";save();renderShopping()}};
+$("clearCheckedBtn").onclick=()=>{shopping=shopping.filter(x=>!x.checked);save();renderShopping()};
+$("clearShopBtn").onclick=()=>{if(confirm("Möchtest du die gesamte Einkaufsliste leeren?")){shopping=[];save();renderShopping()}};
+$("shareShopBtn").onclick=async()=>{const text="Einkaufsliste\n"+shopping.map(x=>`${x.checked?"[x]":"[ ]"} ${x.text}`).join("\n");try{if(navigator.share)await navigator.share({title:"Einkaufsliste",text});else{await navigator.clipboard.writeText(text);alert("Einkaufsliste in die Zwischenablage kopiert.")}}catch(e){}};
+$("exportBtn").onclick=exportData;$("importBtn").onclick=()=>$("importFile").click();
+$("importFile").onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());if(!Array.isArray(data.recipes))throw new Error("Ungültig");if(!confirm(`Backup mit ${data.recipes.length} Rezepten importieren? Die vorhandenen Rezepte werden ersetzt.`))return;recipes=data.recipes.map(r=>({...r,id:r.id||id()}));shopping=Array.isArray(data.shopping)?data.shopping:[];save();renderRecipes();nav("home");alert("Backup erfolgreich importiert.")}catch(err){alert("Diese Datei ist kein gültiges Rezeptsammlungs-Backup.")}finally{$("importFile").value=""}};
+$("resetAllBtn").onclick=()=>{if(confirm("Wirklich alle gespeicherten Rezepte und die Einkaufsliste löschen? Diese Aktion kann nicht rückgängig gemacht werden.")){if(confirm("Letzte Sicherheitsabfrage: Bitte nur bestätigen, wenn du ein Backup hast oder alles endgültig löschen möchtest.")){recipes=[];shopping=[];save();renderRecipes();alert("Alle Rezepte und die Einkaufsliste wurden gelöscht.")}}};
+function render(){renderFilters();renderRecipes();renderShopping()}render();
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;$("installBtn").classList.remove("hidden")});
+$("installBtn").onclick=async()=>{if(!deferredInstall){alert("Falls keine Installationsabfrage erscheint: Im Browser-Menü ⋮ „Zum Startbildschirm hinzufügen“ oder „App installieren“ wählen.");return}deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;$("installBtn").classList.add("hidden")};
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
+</script>
+</body>
+</html>
