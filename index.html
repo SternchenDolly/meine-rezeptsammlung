@@ -134,7 +134,7 @@ function renderShopping(){
 function exportData(){const data={app:"Meine Rezeptsammlung",version:1,exportedAt:new Date().toISOString(),recipes,shopping};const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="rezeptsammlung-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();URL.revokeObjectURL(url)}
 function showBackup(){nav("backup")}
 $("addRecipeBtn").onclick=()=>openEditor();$("randomBtn").onclick=()=>{if(!recipes.length){alert("Dein Kochbuch ist noch leer. Füge zuerst ein Rezept hinzu.");return}showDetail(recipes[Math.floor(Math.random()*recipes.length)].id)};
-$("shoppingBtn").onclick=()=>nav("shop");$("backupBtn").onclick=()=>nav("backup");$("navHome").onclick=()=>nav("home");$("navShop").onclick=()=>nav("shop");$("navBackup").onclick=()=>nav("backup");$("backHomeBtn").onclick=()=>nav("home");$("backupBackBtn").onclick=()=>nav("home");
+$("navHome").onclick=()=>nav("home");$("navShop").onclick=()=>nav("shop");$("navBackup").onclick=()=>nav("backup");$("backHomeBtn").onclick=()=>nav("home");$("backupBackBtn").onclick=()=>nav("home");
 $("searchInput").oninput=renderRecipes;$("clearSearch").onclick=()=>{$("searchInput").value="";renderRecipes()};
 $("shopAddBtn").onclick=()=>{const v=$("shopNewName").value.trim();if(v){shopping.push({id:id(),text:v,checked:false,recipe:""});$("shopNewName").value="";save();renderShopping()}};
 $("clearCheckedBtn").onclick=()=>{shopping=shopping.filter(x=>!x.checked);save();renderShopping()};
