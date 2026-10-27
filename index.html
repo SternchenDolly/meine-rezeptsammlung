@@ -34,8 +34,7 @@ input,textarea,select{width:100%;border:1px solid #d8d5ca;background:white;borde
 <div class="toolbar">
 <button id="addRecipeBtn">＋ Rezept hinzufügen</button>
 <button id="randomBtn" class="secondary">🎲 Überrasch mich!</button>
-<button id="shoppingBtn" class="secondary">🛒 Einkaufsliste</button>
-<button id="backupBtn" class="ghost">⇧ Backup</button>
+
 </div>
 <div class="searchrow"><input id="searchInput" type="search" placeholder="🔎 Rezept oder Zutat suchen …" aria-label="Rezepte suchen"><button id="clearSearch" class="ghost">✕</button></div>
 <div id="filters" class="filters"></div>
@@ -65,6 +64,7 @@ input,textarea,select{width:100%;border:1px solid #d8d5ca;background:white;borde
 <script>
 const $=id=>document.getElementById(id);
 const CATEGORIES=["Alle","Fleisch","Geflügel","Fisch","Gemüse","Pasta","Dessert","Suppe","Backen","Sonstiges","❤️ Favoriten"];
+const FILTER_CATEGORIES=["Alle","Dessert","❤️ Favoriten"];
 const KEY="meineRezeptsammlung_v1", SHOPKEY="meineRezeptsammlung_shop_v1";
 let recipes=load(KEY,[]), shopping=load(SHOPKEY,[]), activeCategory="Alle", deferredInstall=null, editingId=null, detailId=null;
 function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v??fallback}catch(e){return fallback}}
@@ -73,7 +73,7 @@ function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,
 function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function safeImage(s){return typeof s==="string"&&s.startsWith("data:image/")?s:""}
 function nav(which){$("homeView").classList.toggle("hidden",which!=="home");$("shoppingView").classList.toggle("hidden",which!=="shop");$("backupView").classList.toggle("hidden",which!=="backup");$("navHome").classList.toggle("active",which==="home");$("navShop").classList.toggle("active",which==="shop");$("navBackup").classList.toggle("active",which==="backup");if(which==="shop")renderShopping();if(which==="home")renderRecipes()}
-function renderFilters(){ $("filters").innerHTML=CATEGORIES.map(c=>`<button class="chip ${c===activeCategory?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");$("filters").querySelectorAll("button").forEach(b=>b.onclick=()=>{activeCategory=b.dataset.cat;renderFilters();renderRecipes()})}
+function renderFilters(){ $("filters").innerHTML=FILTER_CATEGORIES.map(c=>`<button class="chip ${c===activeCategory?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");$("filters").querySelectorAll("button").forEach(b=>b.onclick=()=>{activeCategory=b.dataset.cat;renderFilters();renderRecipes()})}
 function renderRecipes(){
  const q=$("searchInput").value.trim().toLowerCase();
  const list=recipes.filter(r=>(activeCategory==="Alle"||(activeCategory==="❤️ Favoriten"?r.favorite:r.category===activeCategory))&&(!q||[r.name,r.category,r.notes,...(r.ingredients||[]).map(x=>x.name)].join(" ").toLowerCase().includes(q)));
